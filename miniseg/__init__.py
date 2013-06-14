@@ -1,3 +1,4 @@
+#encoding=utf-8
 import re
 import os
 import marshal
@@ -98,11 +99,12 @@ def cut(sentence):
 			sentence = sentence.decode('utf-8')
 		except:
 			sentence = sentence.decode('gbk','ignore')
-	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5]+)"), re.compile(ur"([a-zA-Z0-9+#]+)")
-	re_not_han = re.compile(ur"([^\u4E00-\u9FA5]+)")
+	re_han, re_skip = re.compile(ur"([\u4E00-\u9FA5，。【】？、：（）！·“”……《》]+)"), re.compile(ur"([a-zA-Z0-9+#]+)")
+	re_not_han = re.compile(ur"([^\u4E00-\u9FA5，。【】？、：（）！·“”……《》]+)")
 	blocks = re_not_han.split(sentence)
 
 	for blk in blocks:
+		#print blk
 		if re_han.match(blk):
 			for word in __cut(blk):
 				yield word
