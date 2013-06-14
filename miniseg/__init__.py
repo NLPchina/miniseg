@@ -13,6 +13,7 @@ logger.addHandler(handler)
 
 MIN_FLOAT=-30
 HIGHFREQ_THRESHOLD=-7.0
+MINUS_INF=float("-inf")
 
 def load_model(f_name):
 	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )
@@ -64,7 +65,7 @@ def viterbi(obs, states, start_p, trans_p):
 		newpath = {}
 		for y in states:
 			emit_p = get_emit_prob(obs,t,y)
-			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,float("-inf")) + emit_p ,y0) for y0 in states])
+			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MINUS_INF) + emit_p ,y0) for y0 in states])
 			V[t][y] =prob
 			newpath[y] = path[state] + [y]
 		path = newpath
