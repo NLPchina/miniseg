@@ -12,7 +12,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 MIN_FLOAT=-30
-HIGHFREQ_THRESHOLD=-8.0
+HIGHFREQ_THRESHOLD=-7.0
 
 def load_model(f_name):
 	_curpath=os.path.normpath( os.path.join( os.getcwd(), os.path.dirname(__file__) )  )

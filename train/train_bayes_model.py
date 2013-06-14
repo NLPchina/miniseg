@@ -31,8 +31,11 @@ def line_update(line):
 			table[chars]+=1.0
 			model['obs']['sum_'+state][idx]+=1.0
 	except:
-		print line
-		print traceback.format_exc()
+		try:
+			print line
+			print traceback.format_exc()
+		except:
+			pass
 
 def log_normalize():
 	global model
