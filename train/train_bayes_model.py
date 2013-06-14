@@ -1,4 +1,5 @@
 import marshal
+import traceback
 from math import log
 
 model={
@@ -18,16 +19,20 @@ model={
 
 def line_update(line):
 	global model
-	items = line.split("\t")
-	features = items[:10]
-	state = items[10].upper()
-	model['states'][state]+=1.0
-	for idx,chars in enumerate(features):
-		table = model['obs'][state][idx]
-		if not (chars in table):
-			table[chars]=0.0
-		table[chars]+=1.0
-		model['obs']['sum_'+state][idx]+=1.0
+	try:
+		items = line.split("\t")
+		features = items[:10]
+		state = items[10].upper()
+		model['states'][state]+=1.0
+		for idx,chars in enumerate(features):
+			table = model['obs'][state][idx]
+			if not (chars in table):
+				table[chars]=0.0
+			table[chars]+=1.0
+			model['obs']['sum_'+state][idx]+=1.0
+	except:
+		print line
+		print traceback.format_exc()
 
 def log_normalize():
 	global model
@@ -46,7 +51,7 @@ def dump_model(file_name):
 
 if __name__ == "__main__":
 
-	for line in open("train_data.txt",'rb'):
+	for line in open("feature.txt",'rb'):
 		line = line.rstrip().decode('utf-8')
 		line_update(line)
 

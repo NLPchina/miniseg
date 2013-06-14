@@ -1,6 +1,15 @@
 import re
 import os
 import marshal
+import logging
+import sys
+
+logger = logging.getLogger("miniseg")
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s [%(name)s] [%(levelname)s] - %(message)s')
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 MIN_FLOAT=-30
 HIGHFREQ_THRESHOLD=-8.0
@@ -16,9 +25,11 @@ def load_model(f_name):
 			result = marshal.load(in_f)
 			return result
 
+logger.info("start loading model...")
 prob_start = load_model("prob_start.py")
 prob_trans = load_model("prob_trans.py")
 bayes_model = load_model("bayes_model.marshal")
+logger.info("loaded.")
 
 def get_emit_prob(obs,idx,state):
 	global bayes_model

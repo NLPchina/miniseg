@@ -1,3 +1,5 @@
+import glob
+
 def line2items(line):
 	items =[x.split('/') for x in  line.split("  ") if x!=""]
 	return items
@@ -20,15 +22,17 @@ def item2feature(items,idx):
 	return feature,tag
 
 if __name__ == "__main__":
-	out_f = open("train_data.txt","wb")
+	out_f = open("feature.txt","wb")
 
-	for line in open('msr.txt','rb'):
-		line = line.rstrip()
-		items = line2items(line)
-		for idx in range(len(items)):
-			feature, tag = item2feature(items,idx)
-			#print feature
-			print >> out_f, "\t".join(feature)+"\t"+tag
+	for fname in glob.glob("train_txt/*.txt"):
+		print "reading ", fname
+		for line in open(fname,'rb'):
+			line = line.rstrip()
+			items = line2items(line)
+			for idx in range(len(items)):
+				feature, tag = item2feature(items,idx)
+				#print feature
+				out_f.write("\t".join(feature)+"\t"+tag+"\n")
 
 	out_f.close()
 
