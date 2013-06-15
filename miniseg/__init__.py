@@ -12,8 +12,8 @@ handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-MIN_FLOAT=-30
-HIGHFREQ_THRESHOLD=-7.0
+MIN_FLOAT=-35.0
+
 MINUS_INF=float("-inf")
 
 def load_model(f_name):
@@ -47,19 +47,15 @@ def get_emit_prob(obs,idx,state):
 	feature.append(feature[3]+feature[4])
 	feature.append(feature[1]+feature[3])
 
-	factor = 0.0
-	for j,chars in enumerate(feature):
-		v = bayes_model['obs'][state][j].get(chars,MIN_FLOAT)
-		if state=='S' and v>HIGHFREQ_THRESHOLD:
-			v= HIGHFREQ_THRESHOLD + (v-HIGHFREQ_THRESHOLD)*0.1
-		factor += v
+	factor = sum( [bayes_model['obs'][state][j].get(chars,MIN_FLOAT) for j,chars in enumerate(feature)])
+
 	return bayes_model['states'][state] + factor
 
 def viterbi(obs, states, start_p, trans_p):
 	V = [{}] #tabular
 	path = {}
 	for y in states: #init
-		V[0][y] = start_p[y] + get_emit_prob(obs,0,y)
+		V[0][y] = start_p.get(y,MINUS_INF) + get_emit_prob(obs,0,y)
 		path[y] = [y]
 	for t in range(1,len(obs)):
 		V.append({})

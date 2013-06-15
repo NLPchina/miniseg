@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	for fname in glob.glob("train_txt/*.txt"):
 		print "reading ", fname
 		for line in open(fname,'rb'):
-			line = line.rstrip().replace("\t"," ")
+			line = line.rstrip().replace("\t"," ").upper()
 			items = line2items(line)
 			for idx in range(len(items)):
 				feature, tag = item2feature(items,idx)
