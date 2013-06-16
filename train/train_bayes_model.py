@@ -25,6 +25,8 @@ def line_update(line):
 		state = items[10].upper()
 		model['states'][state]+=1.0
 		for idx,chars in enumerate(features):
+			if chars.strip()=="":
+				continue
 			table = model['obs'][state][idx]
 			if not (chars in table):
 				table[chars]=0.0
