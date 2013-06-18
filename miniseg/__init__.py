@@ -35,21 +35,22 @@ logger.info("loaded.")
 
 def get_emit_prob(obs,idx,state):
 	global bayes_model
-	feature = []
-	for j in xrange(idx-2,idx+3):
-		if j<0 or j>=len(obs):
-			feature.append(" ")
-		else:
-			feature.append(obs[j])
+	feature = []					
+	feature = [obs[j] if (j>=0 and j<len(obs)) else " " for j in xrange(idx-2,idx+3) ]
 	feature.append(feature[0]+feature[1])
 	feature.append(feature[1]+feature[2])
 	feature.append(feature[2]+feature[3])
 	feature.append(feature[3]+feature[4])
 	feature.append(feature[1]+feature[3])
-
 	factor = sum( [bayes_model['obs'][state][j].get(chars,MIN_FLOAT) for j,chars in enumerate(feature)])
+	return factor
 
-	return bayes_model['states'][state] + factor
+PREVE_STATES = {
+	'B':('E','S'),
+	'M':('M','B'),
+	'S':('S','E'),
+	'E':('B','M')
+}
 
 def viterbi(obs, states, start_p, trans_p):
 	V = [{}] #tabular
@@ -62,7 +63,7 @@ def viterbi(obs, states, start_p, trans_p):
 		newpath = {}
 		for y in states:
 			emit_p = get_emit_prob(obs,t,y)
-			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MINUS_INF) + emit_p ,y0) for y0 in states])
+			(prob,state ) = max([(V[t-1][y0] + trans_p[y0].get(y,MINUS_INF) + emit_p ,y0) for y0 in PREVE_STATES[y]])
 			V[t][y] =prob
 			newpath[y] = path[state] + [y]
 		path = newpath

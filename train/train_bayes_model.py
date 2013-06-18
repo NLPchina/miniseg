@@ -56,10 +56,13 @@ def dump_model(file_name):
 
 if __name__ == "__main__":
 
+	ct = 0 
 	for line in open("feature.txt",'rb'):
 		line = line.rstrip().decode('utf-8')
 		line_update(line)
-
+		ct+=1
+		if ct%10000==0:
+			print "line ", ct, "completed."
 	print "loaded."
 	log_normalize()
 	print "normalized."
