@@ -2,18 +2,20 @@ import marshal
 import traceback
 from math import log
 
+window_size = 10
+
 model={
 	'states':{'S':0.0,'B':0.0,'M':0.0,'E':0.0},
 	'obs':
 	{
-		'S':[{} for x in range(10)],
-		'B':[{} for x in range(10)],
-		'M':[{} for x in range(10)],
-		'E':[{} for x in range(10)],
-		'sum_S':[0]*10,
-		'sum_B':[0]*10,
-		'sum_M':[0]*10,
-		'sum_E':[0]*10
+		'S':[{} for x in range(window_size)],
+		'B':[{} for x in range(window_size)],
+		'M':[{} for x in range(window_size)],
+		'E':[{} for x in range(window_size)],
+		'sum_S':[0]*window_size,
+		'sum_B':[0]*window_size,
+		'sum_M':[0]*window_size,
+		'sum_E':[0]*window_size
 	}
 }
 
@@ -21,8 +23,8 @@ def line_update(line):
 	global model
 	try:
 		items = line.split("\t")
-		features = items[:10]
-		state = items[10].upper()
+		features = items[:window_size]
+		state = items[window_size].upper()
 		model['states'][state]+=1.0
 		for idx,chars in enumerate(features):
 			if chars.strip()=="":

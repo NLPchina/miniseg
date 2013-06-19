@@ -1,4 +1,5 @@
 import glob
+window_size = 10
 
 def line2items(line):
 	items =[x.split('/') for x in  line.split("  ") if x!=""]
@@ -12,16 +13,17 @@ def item2feature(items,idx):
 			feature.append(" ")
 		else:
 			feature.append(items[j][0].replace("\t"," "))
-	feature.append(feature[0]+feature[1])
+	
 	feature.append(feature[1]+feature[2])
 	feature.append(feature[2]+feature[3])
-	feature.append(feature[3]+feature[4])
 	feature.append(feature[1]+feature[3])
+	feature.append(feature[0]+feature[2])
+	feature.append(feature[2]+feature[4])
 
 	tag = items[idx][1]
 	if not (tag in ('B','M','E','S')):
 		raise Exception("invalid tag: " + tag)
-	if len(feature)<10:
+	if len(feature)<window_size:
 		raise Exception("invalid feature: "+ str(feature))
 
 	return feature,tag
