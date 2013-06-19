@@ -38,11 +38,13 @@ def get_emit_prob(obs,idx,state):
 	feature = []					
 	feature = [obs[j] if (j>=0 and j<len(obs)) else " " for j in xrange(idx-2,idx+3) ]
 
+	feature.append(feature[0]+feature[1])
 	feature.append(feature[1]+feature[2])
 	feature.append(feature[2]+feature[3])
+	feature.append(feature[3]+feature[4])
 	feature.append(feature[1]+feature[3])
-	feature.append(feature[0]+feature[2])
-	feature.append(feature[2]+feature[4])
+	feature.append(feature[0]+feature[2]+feature[4])
+
 	
 	factor = sum( [bayes_model['obs'][state][j].get(chars,MIN_FLOAT) for j,chars in enumerate(feature)])
 	return factor

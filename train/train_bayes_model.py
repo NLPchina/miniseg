@@ -2,20 +2,20 @@ import marshal
 import traceback
 from math import log
 
-window_size = 10
+feature_count = 11
 
 model={
 	'states':{'S':0.0,'B':0.0,'M':0.0,'E':0.0},
 	'obs':
 	{
-		'S':[{} for x in range(window_size)],
-		'B':[{} for x in range(window_size)],
-		'M':[{} for x in range(window_size)],
-		'E':[{} for x in range(window_size)],
-		'sum_S':[0]*window_size,
-		'sum_B':[0]*window_size,
-		'sum_M':[0]*window_size,
-		'sum_E':[0]*window_size
+		'S':[{} for x in range(feature_count)],
+		'B':[{} for x in range(feature_count)],
+		'M':[{} for x in range(feature_count)],
+		'E':[{} for x in range(feature_count)],
+		'sum_S':[0]*feature_count,
+		'sum_B':[0]*feature_count,
+		'sum_M':[0]*feature_count,
+		'sum_E':[0]*feature_count
 	}
 }
 
@@ -23,8 +23,8 @@ def line_update(line):
 	global model
 	try:
 		items = line.split("\t")
-		features = items[:window_size]
-		state = items[window_size].upper()
+		features = items[:feature_count]
+		state = items[feature_count].upper()
 		model['states'][state]+=1.0
 		for idx,chars in enumerate(features):
 			if chars.strip()=="":
@@ -48,7 +48,7 @@ def log_normalize():
 	for state in ('S','B','M','E'):
 		for idx,table in enumerate(model['obs'][state]):
 			ssum = model['obs']['sum_'+state][idx]
-			model['obs'][state][idx] = dict([ (k,log(v/ssum)) for k,v in table.iteritems() ])
+			model['obs'][state][idx] = dict([ (k,log(v/ssum)) for k,v in table.iteritems() if v>1])
 
 def dump_model(file_name):
 	global model
