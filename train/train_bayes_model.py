@@ -12,10 +12,6 @@ model={
 		'B':[{} for x in range(feature_count)],
 		'M':[{} for x in range(feature_count)],
 		'E':[{} for x in range(feature_count)],
-		'sum_S':[0]*feature_count,
-		'sum_B':[0]*feature_count,
-		'sum_M':[0]*feature_count,
-		'sum_E':[0]*feature_count
 	}
 }
 
@@ -33,7 +29,6 @@ def line_update(line):
 			if not (chars in table):
 				table[chars]=0.0
 			table[chars]+=1.0
-			model['obs']['sum_'+state][idx]+=1.0
 	except:
 		try:
 			print line
@@ -47,7 +42,7 @@ def log_normalize():
 	model['states'] = dict([(k,log(v/total)) for k,v in model['states'].iteritems()])
 	for state in ('S','B','M','E'):
 		for idx,table in enumerate(model['obs'][state]):
-			ssum = model['obs']['sum_'+state][idx]
+			ssum = sum([v for v in table.itervalues() if v>1])
 			model['obs'][state][idx] = dict([ (k,log(v/ssum)) for k,v in table.iteritems() if v>1])
 
 def dump_model(file_name):
