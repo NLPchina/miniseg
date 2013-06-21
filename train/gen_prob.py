@@ -23,14 +23,18 @@ def update_freq(items):
 	global prob_trans,prob_start
 	prev_state = None
 	for item in items:
-		if prev_state == None:
-			prob_start[item]+=1.0
-			prev_state = item
-		else:
-			if not (item in prob_trans[prev_state]):
-				prob_trans[prev_state][item] = 0.0
-			prob_trans[prev_state][item]+=1.0
-			prev_state = item
+		try:
+			if prev_state == None:
+				prob_start[item]+=1.0
+				prev_state = item
+			else:
+				if not (item in prob_trans[prev_state]):
+					prob_trans[prev_state][item] = 0.0
+				prob_trans[prev_state][item]+=1.0
+				prev_state = item
+		except:
+			import traceback
+			print traceback.format_exc()
 
 def log_norm_freq():
 	global prob_trans,prob_start

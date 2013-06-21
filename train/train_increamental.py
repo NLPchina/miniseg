@@ -1,6 +1,7 @@
 import marshal
 import traceback
-from math import log
+from math import log,exp
+import sys
 
 feature_count = 11
 
@@ -54,8 +55,25 @@ def dump_model(file_name):
 	with outf:
 		marshal.dump(model,outf)
 
-if __name__ == "__main__":
+def load_old_model(file_name):
+	global model
+	inf = open(file_name,"rb")
+	with inf:
+		model = marshal.load(inf)
+	for state in ('S','B','M','E'):
+		for idx,table in enumerate(model['obs'][state]):
+			ssum = model['total'][state][idx]
+			model['obs'][state][idx] = dict([ (k,exp(p)*ssum) for k,p in table.iteritems()])
 
+if __name__ == "__main__":
+	if len(sys.argv)<3:
+		print "usage: python train_incremental.py [model file name] [feature file name]"
+		sys.exit(0)
+
+	old_model_file_name = sys.argv[1]
+	feature_file_name = sys.argv[2]
+	load_old_model(old_model_file_name)
+	print "old model loaded."
 	ct = 0 
 	for line in open("feature.txt",'rb'):
 		line = line.rstrip().decode('utf-8')
@@ -63,9 +81,11 @@ if __name__ == "__main__":
 		ct+=1
 		if ct%10000==0:
 			print "line ", ct, "completed."
-	print "loaded."
+	
 	log_normalize()
 	print "normalized."
-	dump_model("bayes_model.marshal")
-	print "dumped"
+	new_model_name = old_model_file_name+".new"
+	dump_model(new_model_name)
+	print new_model_name,"dumped"
+
 

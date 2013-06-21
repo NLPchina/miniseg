@@ -1,4 +1,5 @@
-import glob
+import glob,sys
+
 feature_count = 11
 
 def line2items(line):
@@ -29,12 +30,8 @@ def item2feature(items,idx):
 
 	return feature,tag
 
-if __name__ == "__main__":
-	out_f = open("feature.txt","wb")
-
-	for fname in glob.glob("train_txt/*.txt"):
-		print "reading ", fname
-		for line in open(fname,'rb'):
+def process_file(fname,out_f):
+	for line in open(fname,'rb'):
 			line = line.rstrip().replace("\t"," ").upper()
 			items = line2items(line)
 			for idx in range(len(items)):
@@ -42,8 +39,15 @@ if __name__ == "__main__":
 				#print feature
 				out_f.write("\t".join(feature)+"\t"+tag+"\n")
 
+if __name__ == "__main__":
+	out_f = open("feature.txt","wb")
+	if len(sys.argv)<2:
+		for fname in glob.glob("train_txt/*.txt"):
+			print "reading ", fname
+			process_file(fname,out_f)
+	else:
+		process_file(sys.argv[1],out_f)
 	out_f.close()
-
 
 
 
